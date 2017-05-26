@@ -14,10 +14,11 @@ import java.util.Set;
  *            bean type
  */
 public class CrudService<T> implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+	private final Set<T> storage = new LinkedHashSet<T>();
 
-    private Set<T> storage = new LinkedHashSet<T>();
-
-    public void save(T entity) {
+    public void save(final T entity) {
         if (storage.contains(entity)) {
             return;
         }
@@ -28,7 +29,7 @@ public class CrudService<T> implements Serializable {
         return new ArrayList<T>(storage);
     }
 
-    public void delete(T entity) {
+    public void delete(final T entity) {
         storage.remove(entity);
     }
 }

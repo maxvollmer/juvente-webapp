@@ -2,32 +2,34 @@ package de.juvente;
 
 import javax.servlet.annotation.WebServlet;
 
-import de.juvente.backend.CrudService;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.DataProvider;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import de.juvente.backend.CrudService;
+
 /**
  *
  */
 @Theme("mytheme")
 public class MyUI extends UI {
+	private static final long serialVersionUID = 1L;
 
-    private CrudService<Person> service = new CrudService<>();
-    private DataProvider<Person, String> dataProvider = new CallbackDataProvider<>(
+    private final CrudService<Person> service = new CrudService<>();
+    private final DataProvider<Person, String> dataProvider = new CallbackDataProvider<>(
                     query -> service.findAll().stream(),
                     query -> service.findAll().size());
 
     @Override
-    protected void init(VaadinRequest vaadinRequest) {
+    protected void init(final VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
         final TextField name = new TextField();
         name.setCaption("Type your name here:");
@@ -55,5 +57,6 @@ public class MyUI extends UI {
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
+    	private static final long serialVersionUID = 1L;
     }
 }
