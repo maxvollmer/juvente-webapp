@@ -12,9 +12,9 @@
 //$v-border-radius: 4px;
 
 // Affects the color of some component elements, e.g Button, Panel title, etc
-//$v-background-color: hsl(210, 0%, 98%);
+//$v-background-color: #ffffff;
 // Affects the color of content areas, e.g  Panel and Window content, TextField input etc
-//$v-app-background-color: $v-background-color;
+$v-app-background-color: #0B6892;
 
 // Affects the visual appearance of all components
 //$v-gradient: v-linear 8%;
@@ -31,8 +31,13 @@
 
 @import "../valo/valo.scss";
 
-@mixin mytheme {
+@mixin juventetheme {
   @include valo;
-
-  // Insert your own theme rules here
+  
+	.header {
+		height: 239px;
+		background-image: url(../images/header.png);
+		background-position: center;
+		background-repeat: no-repeat;
+	}
 }

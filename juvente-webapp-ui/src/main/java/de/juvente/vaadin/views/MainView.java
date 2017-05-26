@@ -1,26 +1,20 @@
-package de.juvente;
+package de.juvente.vaadin.views;
 
-import javax.servlet.annotation.WebServlet;
-
-import com.vaadin.annotations.Theme;
-import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.data.provider.CallbackDataProvider;
 import com.vaadin.data.provider.DataProvider;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinServlet;
+import com.vaadin.navigator.View;
+import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Grid;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import de.juvente.Person;
 import de.juvente.backend.CrudService;
+import de.juvente.vaadin.ui.NavigatorUI;
 
-/**
- *
- */
-@Theme("mytheme")
-public class MyUI extends UI {
+public class MainView extends VerticalLayout implements View
+{
 	private static final long serialVersionUID = 1L;
 
     private final CrudService<Person> service = new CrudService<>();
@@ -28,9 +22,7 @@ public class MyUI extends UI {
                     query -> service.findAll().stream(),
                     query -> service.findAll().size());
 
-    @Override
-    protected void init(final VaadinRequest vaadinRequest) {
-        final VerticalLayout layout = new VerticalLayout();
+	public MainView(final NavigatorUI navigatorUI) {
         final TextField name = new TextField();
         name.setCaption("Type your name here:");
 
@@ -45,18 +37,14 @@ public class MyUI extends UI {
         grid.setDataProvider(dataProvider);
         grid.setSizeFull();
 
-        // This is a component from the juvente-webapp-addon module
-        //layout.addComponent(new MyComponent());
-        layout.addComponents(name, button, grid);
-        layout.setSizeFull();
-        layout.setExpandRatio(grid, 1.0f);
+        this.addComponents(name, button, grid);
+        this.setSizeFull();
+        this.setExpandRatio(grid, 1.0f);
+	}
 
-        setContent(layout);
-    }
-
-    @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
-    @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
-    public static class MyUIServlet extends VaadinServlet {
-    	private static final long serialVersionUID = 1L;
-    }
+	@Override
+	public void enter(final ViewChangeEvent event)
+	{
+		
+	}
 }
