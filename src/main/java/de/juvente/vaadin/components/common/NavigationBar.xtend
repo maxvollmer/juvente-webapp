@@ -11,6 +11,8 @@ import com.vaadin.ui.HorizontalLayout
 
 class NavigationBar extends HorizontalLayout {
 
+	private boolean foo = false
+
 	new() {
 		styleName = "navbar";
 
@@ -22,7 +24,7 @@ class NavigationBar extends HorizontalLayout {
 	}
 
 	def createTemporaryLanguageTestButton() {
-		val button = new Button("LOLÜBERSETZ", [JuventeUI.getCurrent().setLocale(if (Math.random()>0.5) Locale.ENGLISH else Locale.GERMAN)]);
+		val button = new Button("LOLÜBERSETZ", [JuventeUI.current?.setLocale(if (foo=!foo) Locale.ENGLISH else Locale.GERMAN)]);
 		button.styleName ="navlink";
 		return button;
 	}

@@ -67,7 +67,7 @@ class JuventeUI extends UI {
 	}
 
 	override protected init(VaadinRequest request) {
-		i18n.setUI(this);
+		i18n.componentAttachedToContainer(new ComponentAttachEvent(this, this))
 
 		val layout = new VerticalLayout();
 		layout.styleName = "juvente-container";
