@@ -3,7 +3,12 @@ package de.juvente.vaadin.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.annotation.WebListener;
+import javax.servlet.annotation.WebServlet;
+
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.ContextLoaderListener;
 
 import com.github.wolfie.history.HistoryExtension;
 import com.vaadin.annotations.Theme;
@@ -13,28 +18,44 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.spring.annotation.EnableVaadin;
+import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 import de.juvente.vaadin.components.common.Footer;
 import de.juvente.vaadin.components.common.Header;
 import de.juvente.vaadin.components.common.NavigationBar;
+import de.juvente.vaadin.i18n.I18NUI;
 import de.juvente.vaadin.views.ErrorView;
 import de.juvente.vaadin.views.MainView;
 import de.juvente.vaadin.views.StartView;
 
 @SuppressWarnings("serial")
+@SpringUI
 @Theme("juventetheme")
-public class NavigatorUI extends UI {
+public class NavigatorUI extends I18NUI {
 	private static final String ERROR_WEB_TITLE = "Error";
 
 	private final Map<Class<? extends View>, String> viewNames = new HashMap<>();
 	private final Map<Class<? extends View>, String> viewWebtitles = new HashMap<>();
 	private Navigator navigator;
 
+    @WebServlet(urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)
+	public static class NavigatorUIServlet extends SpringVaadinServlet {
+	}
+
+	@WebListener
+	public static class MyContextLoaderListener extends ContextLoaderListener {}
+
+	@Configuration
+	@EnableVaadin
+	public static class MyConfiguration {
+	}
+
 	@Override
-	protected void init(final VaadinRequest vaadinRequest) {
+	protected void initialize(final VaadinRequest vaadinRequest) {
 		final VerticalLayout layout = new VerticalLayout();
 		this.setContent(layout);
 
@@ -69,6 +90,12 @@ public class NavigatorUI extends UI {
 			{
 				setPageTitleForView(event.getNewView());
 				return true;
+			}
+			@Override
+			public void afterViewChange(final ViewChangeEvent event)
+			{
+				setPageTitleForView(event.getNewView());
+				updateI18N();
 			}
 		});
 
