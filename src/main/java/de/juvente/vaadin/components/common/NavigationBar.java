@@ -8,7 +8,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HorizontalLayout;
 
-import de.juvente.vaadin.i18n.texts.Texts;
+import de.juvente.i18n.texts.Texts;
 import de.juvente.vaadin.ui.NavigatorUI;
 import de.juvente.vaadin.views.MainView;
 import de.juvente.vaadin.views.StartView;

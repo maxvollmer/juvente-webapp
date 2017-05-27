@@ -1,4 +1,4 @@
-package de.juvente.vaadin.i18n;
+package de.juvente.i18n;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,35 +9,47 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.HasComponents;
+import com.vaadin.ui.HasComponents.ComponentAttachDetachNotifier;
+import com.vaadin.ui.HasComponents.ComponentAttachEvent;
+import com.vaadin.ui.HasComponents.ComponentAttachListener;
 import com.vaadin.ui.UI;
 
 import de.juvente.backend.data.Text;
 import de.juvente.backend.repositories.TextRepository;
+import de.juvente.i18n.texts.Texts;
 
 @SuppressWarnings("serial")
-@SpringUI
-public abstract class I18NUI extends UI
+@org.springframework.stereotype.Component
+public class I18N implements ComponentAttachListener
 {
 	private final Set<ComponentAttachDetachNotifier> componentsWithListener = new HashSet<>();
 	private final Map<Component, String> originalCaptions = new HashMap<>();
 
-	private final ComponentAttachListener myComponentAttachListener = new ComponentAttachListener() {
-		@Override
-		public void componentAttachedToContainer(final ComponentAttachEvent event)
-		{
-			final Component attachedComponent = event.getAttachedComponent();
-			addComponentAttachListenerRecursively(attachedComponent);
-			updateI18N(attachedComponent);
-		}
-	};
+	@Autowired
+	private TextRepository repository;
+
+	private UI ui;
+
+	public void setUI(final UI ui)
+	{
+		repository.save(new Text(Texts.NAVBAR_BUTTON_TEST, "TESTDE", "TESTEN"));
+		this.ui = ui;
+		addComponentAttachListenerRecursively(ui);
+	}
+
+	@Override
+	public void componentAttachedToContainer(final ComponentAttachEvent event)
+	{
+		final Component attachedComponent = event.getAttachedComponent();
+		addComponentAttachListenerRecursively(attachedComponent);
+		updateI18N(attachedComponent);
+	}
 
 	private void addComponentAttachListenerRecursively(final Component component) {
 		if (component instanceof ComponentAttachDetachNotifier && !componentsWithListener.contains(component)) {
-			((ComponentAttachDetachNotifier)component).addComponentAttachListener(myComponentAttachListener);
+			((ComponentAttachDetachNotifier)component).addComponentAttachListener(this);
 			componentsWithListener.add((ComponentAttachDetachNotifier)component);
 		}
 		if (component instanceof HasComponents) {
@@ -47,25 +59,9 @@ public abstract class I18NUI extends UI
 		}
 	}
 
-	@Override
-	protected final void init(final VaadinRequest request)
+	public void updateI18N()
 	{
-		this.addComponentAttachListener(myComponentAttachListener);
-		initialize(request);
-	}
-
-	protected abstract void initialize(VaadinRequest request);
-
-	@Override
-	public void setLocale(final Locale locale)
-	{
-		super.setLocale(locale);
-		updateI18N();
-	}
-
-	protected void updateI18N()
-	{
-		updateI18N(this);
+		updateI18N(ui);
 	}
 
 	private void updateI18N(final Component component)
@@ -97,14 +93,11 @@ public abstract class I18NUI extends UI
 		return originalCaptions.get(component);
 	}
 
-	@Autowired
-	private TextRepository repository;
-
 	private String translate(final String key)
 	{
 		final Text text = repository.findByKey(key);
 		if (text != null) {
-			if (Locale.ENGLISH.getLanguage().equals(getLocale().getLanguage())) {
+			if (Locale.ENGLISH.getLanguage().equals(ui.getLocale().getLanguage())) {
 				return text.getEn();
 			}
 			else {

@@ -1,12 +1,14 @@
 package de.juvente.vaadin.ui;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.ContextLoaderListener;
 
@@ -22,12 +24,13 @@ import com.vaadin.spring.annotation.EnableVaadin;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.server.SpringVaadinServlet;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import de.juvente.i18n.I18N;
 import de.juvente.vaadin.components.common.Footer;
 import de.juvente.vaadin.components.common.Header;
 import de.juvente.vaadin.components.common.NavigationBar;
-import de.juvente.vaadin.i18n.I18NUI;
 import de.juvente.vaadin.views.ErrorView;
 import de.juvente.vaadin.views.MainView;
 import de.juvente.vaadin.views.StartView;
@@ -35,12 +38,15 @@ import de.juvente.vaadin.views.StartView;
 @SuppressWarnings("serial")
 @SpringUI
 @Theme("juventetheme")
-public class NavigatorUI extends I18NUI {
+public class NavigatorUI extends UI {
 	private static final String ERROR_WEB_TITLE = "Error";
 
 	private final Map<Class<? extends View>, String> viewNames = new HashMap<>();
 	private final Map<Class<? extends View>, String> viewWebtitles = new HashMap<>();
 	private Navigator navigator;
+
+	@Autowired
+	private I18N i18n;
 
     @WebServlet(urlPatterns = "/*", name = "NavigatorUIServlet", asyncSupported = true)
 	public static class NavigatorUIServlet extends SpringVaadinServlet {
@@ -55,7 +61,15 @@ public class NavigatorUI extends I18NUI {
 	}
 
 	@Override
-	protected void initialize(final VaadinRequest vaadinRequest) {
+	public void setLocale(final Locale locale)
+	{
+		super.setLocale(locale);
+		i18n.updateI18N();
+	}
+
+	@Override
+	protected void init(final VaadinRequest vaadinRequest) {
+		i18n.setUI(this);
 		final VerticalLayout layout = new VerticalLayout();
 		this.setContent(layout);
 
@@ -95,7 +109,7 @@ public class NavigatorUI extends I18NUI {
 			public void afterViewChange(final ViewChangeEvent event)
 			{
 				setPageTitleForView(event.getNewView());
-				updateI18N();
+				i18n.updateI18N();
 			}
 		});
 

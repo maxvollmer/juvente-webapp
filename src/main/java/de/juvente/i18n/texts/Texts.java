@@ -1,4 +1,4 @@
-package de.juvente.vaadin.i18n.texts;
+package de.juvente.i18n.texts;
 
 public class Texts
 {
