@@ -32,12 +32,29 @@ $v-app-background-color: #0B6892;
 @import "../valo/valo.scss";
 
 @mixin juventetheme {
-  @include valo;
-  
+	@include valo;
+
+	$juvente-page-width: 1170px;
+
 	.header {
+		display: block;
 		height: 239px;
 		background-image: url(images/header.png);
 		background-position: center;
-		background-repeat: no-repeat;
+		background-repeat: repeat;
+		border: none;
+	}
+
+	.header-link {
+		display: block;
+		width: 300px;
+		height: 200px;
+		margin: auto;
+		background: transparent;
+		border: none;
+	}
+
+	.juvente-container {
+		padding: 0;
 	}
 }
