@@ -1,8 +1,8 @@
 package de.juvente.backend.repositories
 
 import de.juvente.backend.data.Text
-import org.springframework.data.mongodb.repository.MongoRepository
+import de.juvente.backend.security.JuventeAccessSecuredRepository
 
-interface TextRepository extends MongoRepository<Text, String> {
+interface TextRepository extends JuventeAccessSecuredRepository<Text, String> {
 	def Text findByKey(String key);
 }

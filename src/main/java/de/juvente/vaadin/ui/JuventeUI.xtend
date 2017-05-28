@@ -30,6 +30,9 @@ import de.juvente.vaadin.views.StartView
 import com.vaadin.navigator.ViewChangeListener
 import com.vaadin.navigator.View
 import java.util.HashMap
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.authentication.AnonymousAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 
 @SpringUI(path = "/*")
 @Theme("juventetheme")
@@ -67,6 +70,8 @@ class JuventeUI extends UI {
 	}
 
 	override protected init(VaadinRequest request) {
+		initSecurity
+		
 		i18n.componentAttachedToContainer(new ComponentAttachEvent(this, this))
 
 		val layout = new VerticalLayout();
@@ -84,6 +89,12 @@ class JuventeUI extends UI {
 
 		initNavigator(content);
 		addViews();
+	}
+
+	def private initSecurity() {
+		val ctx = SecurityContextHolder.createEmptyContext
+		ctx.authentication = new AnonymousAuthenticationToken("lol", "lol", #[new SimpleGrantedAuthority("lol")])
+		SecurityContextHolder.context = ctx
 	}
 
 
